@@ -46,7 +46,7 @@ const BASE = 'https://ai.wxctf.com';
 const HOST = 'ai.wxctf.com';
 const EMAILNATOR = 'https://www.emailnator.com';
 const BRAND = /wxctf/i;                       // sender/subject fence for the code mail
-const SENDER = /wxctf\.com/i;                 // panel's verification sender domain
+const SENDER = /@wxctf\.com$/i;               // the panel mails from its own domain
 const PROMPT = 'Reply with the single word: pong';
 const DEFAULT_MODEL_PREFS = [/^deepseek-chat$/i, /^deepseek-v3$/i, /deepseek/i, /flash|mini|nano|turbo|free/i];
 // ids this panel serves on another protocol (none for wxctf today)

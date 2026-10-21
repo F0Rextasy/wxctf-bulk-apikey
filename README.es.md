@@ -20,7 +20,7 @@
 [![9Router](https://img.shields.io/badge/9Router-connector-8B5CF6?style=for-the-badge)](#-connect-to-9router)
 [![X](https://img.shields.io/badge/X-%40bigbullapp-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/bigbullapp)
 
-[🛠 Inicio rápido](#-quick-start) · [🎁 Nivel gratuito](#-free-tier--how-much-you-get) · [🤖 Modelos](#-models--all-17-of-them) · [🧪 Usa la API](#-how-to-use-the-api) · [✅ Verificado](#-verified-working--every-key-is-tested) · [🧭 Cómo funciona](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [⚙️ Opciones](#️-cli-options) · [🛰️ Proxies](#️-behind-a-proxy) · [🐞 Problemas](#-issues)
+[🛠 Inicio rápido](#-quick-start) · [🎁 Nivel gratuito](#-free-tier--how-much-you-get) · [🤖 Modelos](#-models--all-17-of-them) · [🧪 Usar la API](#-how-to-use-the-api) · [✅ Verificado](#-verified-working--every-key-is-tested) · [🧭 Cómo funciona](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [⚙️ Opciones](#️-cli-options) · [🛰️ Proxies](#️-behind-a-proxy) · [🐞 Problemas](#-issues)
 
 </div>
 
@@ -34,11 +34,11 @@
 
 ## ✨ Por qué existe esto
 
-Wxctf Ai (ai.wxctf.com) es un fork de New API que mantiene el registro **abierto** — sin captcha, sin OAuth, solo código por correo — y se paga a sí mismo: cada cuenta puede reclamar un **check-in diario** que deposita cuota real en el saldo, así que cada clave nace financiada sin tarjeta.
+Wxctf Ai (ai.wxctf.com) es un fork de New API que mantiene el registro **abierto** — sin captcha, sin OAuth, solo código por correo — y se paga solo: cada cuenta puede reclamar un **check-in diario** que deposita cuota real en el saldo, así que cada clave nace financiada sin tarjeta.
 
 Dos cosas lo hacen inusual. Primero, todo el registro es **solo por API**: una dirección de gmail simple, un correo de verificación y un POST de formulario, sin navegador en absoluto (medido el 2026-10-21: cinco cuentas en ~7 minutos, luego diez más en dos lotes). Segundo, el panel es **estricto con la forma de la dirección**: acepta `gmail.com`, `outlook.com` y `qq.com`, pero rechaza cualquier cosa con un punto o un `+` en la parte local como "carácter especial", así que los alias con plus/punto son inútiles aquí y un buzón **simple** `@gmail.com` es el riel que funciona.
 
-Las otras trampas son igual de específicas y todas están codificadas en la herramienta: la llamada de registro debe llevar el **mismo cookie jar** que solicitó el código con un código **fresco** (TTL de 10 minutos), la contraseña debe tener al menos 8 caracteres, y el grupo del token debe ser el `Default` vigente — un token creado con `default` responde `403 Group default has been deprecated` en el relay.
+Las otras trampas son igual de específicas y todas están codificadas en la herramienta: la llamada de registro debe llevar el **mismo cookie jar** que solicitó el código con un código **fresco** (TTL de 10 minutos), la contraseña debe tener al menos 8 caracteres, y el grupo del token debe ser el `Default` activo — un token creado con `default` responde `403 Group default has been deprecated` en el relay.
 
 ## 🎁 Nivel gratuito — cuánto obtienes
 
@@ -46,9 +46,9 @@ Las otras trampas son igual de específicas y todas están codificadas en la her
 | --- | --- |
 | Bono de registro | **ninguno** (`quota = 0` justo después del registro) |
 | Nivel gratuito | **check-in diario** — `POST /api/user/checkin` devuelve `quota_awarded` |
-| Premios medidos | **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** quota (10 cuentas, 2026-10-21) |
-| En USD | **$0.012–$0.087 por cuenta por día** (500 000 quota = $1) — aleatorio por reclamo, **nunca expira** |
-| Stock diario | 10 cuentas ⇒ **259 288 quota ≈ $0.5186 por día**, una vez por cuenta por día (`checkin_date` se aplica) |
+| Premios medidos | **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** de cuota (10 cuentas, 2026-10-21) |
+| En USD | **$0.012–$0.087 por cuenta por día** (500 000 de cuota = $1) — aleatorio por reclamo, **nunca expira** |
+| Stock diario | 10 cuentas ⇒ **259 288 de cuota ≈ $0.5186 por día**, una vez por cuenta por día (`checkin_date` se aplica) |
 | Tarjeta / teléfono / OAuth | **ninguno de ellos** — solo código por correo, `turnstile_check: false` |
 | Modelos | 17 ids activos (DeepSeek V4 Flash/Pro, GLM 5.x, Kimi K3, LongCat, Qwen 3.7/3.8) |
 | Límite de tasa | no publicado; una ráfaga de 30 llamadas se responde con normalidad |
@@ -66,7 +66,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a live key.
+La puerta cuenta `content || reasoning_content`, así que un modelo de razonamiento que gasta su presupuesto pensando igual demuestra que la clave está viva.
 ```
 
 ## 🤖 Modelos — los 17
@@ -83,7 +83,7 @@ The gate counts `content || reasoning_content`, so a reasoning model that spends
 
 ## 🧪 Cómo usar la API
 
-URL base **`https://ai.wxctf.com/v1`** — compatible con OpenAI; las claves tienen 48 caracteres **sin prefijo `sk-`** y van en una cabecera `Authorization: Bearer`.
+URL base **`https://ai.wxctf.com/v1`** — compatible con OpenAI; las claves tienen 48 caracteres y **sin prefijo `sk-`**, y van en una cabecera `Authorization: Bearer`.
 
 ```python
 from openai import OpenAI
@@ -105,13 +105,13 @@ node src/cli.js --verify-only                # re-prove every key
 node src/cli.js --connect-9router            # register them with a local 9Router
 ```
 
-Una cuenta por clave: la herramienta crea un buzón de gmail simple, solicita el código, lo espera, se registra con el mismo cookie jar, inicia sesión, **reclama el check-in diario**, acuña un token en el grupo `Default`, revela la clave y solo entonces la prueba con una completion real.
+Una cuenta por clave: la herramienta crea un buzón de gmail simple, solicita el código, espera a que llegue, se registra con el mismo cookie jar, inicia sesión, **reclama el check-in diario**, acuña un token en el grupo `Default`, revela la clave y solo entonces la demuestra con una completion real.
 
 ### 🖱️ El lanzador
 
 El lanzador pide la lista de proxies (opcional) y el número de cuentas, recuerda ambos y ejecuta el CLI — además de `--verify-only`, `--screen` y el conector 9Router.
 
-## ✅ Verificado funcionando — cada clave se prueba
+## ✅ Verificado y funcionando — cada clave se prueba
 
 Cada comprobación a continuación se ejecutó el **2026-10-21** desde el propio CLI de este paquete (`src/cli.js`), sobre salidas públicas (sin VPN de por medio).
 
@@ -119,10 +119,10 @@ Cada comprobación a continuación se ejecutó el **2026-10-21** desde el propio
 | --- | --- |
 | registro en un flujo real | **no se necesita navegador** — el panel no tiene captcha (`turnstile_check: false`) |
 | riel de gmail simple | Emailnator, leído **directamente**; los puntos/`+` son rechazados por el panel como "caracteres especiales" |
-| correo con código | «Wxctf Ai email verification» de `noreply@<panel-mail>`, **1–25 s**, código de 6 caracteres, válido **10 minutos** |
+| correo con el código | «Wxctf Ai email verification» de `noreply@<panel-mail>`, **1–25 s**, código de 6 caracteres, válido **10 minutos** |
 | registro | **200 `{"success":true}`** con el mismo cookie jar + un código fresco + una contraseña de ≥8 caracteres |
 | nivel gratuito | `POST /api/user/checkin` → `quota_awarded` **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** ⇒ **$0.012–$0.087 por cuenta por día** |
-| stock diario | 10 cuentas ⇒ **259 288 quota ≈ $0.5186/día** (una vez por cuenta por día) |
+| stock diario | 10 cuentas ⇒ **259 288 de cuota ≈ $0.5186/día** (una vez por cuenta por día) |
 | grupo del token | **`Default`** — un token creado con `default` responde `403 Group default has been deprecated` |
 | ruta de la clave | la lista la muestra enmascarada; `POST /api/token/<id>/key` devuelve el texto plano de 48 caracteres |
 | `GET /v1/models` por clave | **200**, 17 ids |
@@ -145,7 +145,7 @@ inbox (one address per account)                                  a fresh address
 | buzón | Emailnator por https simple | un gmail **simple** (forma `plain`, puntos eliminados); el panel rechaza puntos y `+` |
 | código | `GET /api/verification?email=` | llega en ~1–25 s de `noreply@<panel-mail>`, asunto «Wxctf Ai email verification», código de 6 caracteres, válido 10 minutos |
 | registro | `POST /api/user/register` | cuerpo `{username,password,password2,email,verification_code,aff_code}`; **mismo cookie jar**, código **fresco**, contraseña ≥8 |
-| sesión | `POST /api/user/login` | `data.access_token` (Bearer JWT) para las llamadas de consola |
+| sesión | `POST /api/user/login` | `data.access_token` (Bearer JWT) para las llamadas de la consola |
 | fondos | `POST /api/user/checkin` | `{"data":{"checkin_date":"…","quota_awarded":N}}` — el nivel gratuito, reclamado antes de probar la clave |
 | clave | `POST /api/token/` → `POST /api/token/<id>/key` | grupo **`Default`** (`default` está obsoleto → `403 Group default has been deprecated`); la lista muestra la clave enmascarada y `/key` devuelve el texto plano |
 | prueba | `GET /v1/models` + `POST /v1/chat/completions` | `content || reasoning_content`; la clave se escribe solo cuando la completion responde 200 |
@@ -162,7 +162,7 @@ node src/cli.js --screen
 node src/cli.js --connect-9router --base http://localhost:20128 --password 123456
 ```
 
-| Flag | Predeterminado | Significado |
+| Opción | Predeterminado | Significado |
 | --- | --- | --- |
 | `--count N` | `1` | cuentas a crear |
 | `--pool FILE` | `proxies.txt` si existe | salidas, una por línea (`http://`, `socks5://`, `socks4://`) |
@@ -206,7 +206,7 @@ Predeterminados: `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--mode
 | 🎁 Qué da el proveedor | una cuenta por clave — el check-in diario financia cada clave (~$0.012–0.087/día, sin tarjeta, sin captcha) |
 | 🔑 Qué te da una clave | una clave API limitada a su propia cuenta: los 17 ids de modelo en el endpoint de abajo, con los límites de tu plan. La cuota vive en la **cuenta**, que es exactamente por lo que esta herramienta crea una cuenta por clave |
 | 🌐 Forma de la API | compatible con OpenAI: `POST https://ai.wxctf.com/v1/chat/completions` |
-| 🔒 Tus datos | solo se contacta ai.wxctf.com y el backend de buzón que configures; las claves se quedan en tu máquina |
+| 🔒 Tus datos | solo se contacta con ai.wxctf.com y el backend de buzón que configures; las claves permanecen en tu máquina |
 
 ## 🐞 Problemas
 

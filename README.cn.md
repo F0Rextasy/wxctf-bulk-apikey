@@ -34,26 +34,26 @@
 
 ## ✨ 为什么会有这个项目
 
-Wxctf Ai（ai.wxctf.com）是 New API 的一个分支，它保持注册**开放**——没有验证码、没有 OAuth，仅需邮箱验证码——而且能自给自足：每个账户都可以领取**每日签到**，为余额带来真实额度，因此每个密钥一出生就有资金，无需银行卡。
+Wxctf Ai (ai.wxctf.com) 是 New API 的一个分支，它保持注册**开放**——没有验证码，没有 OAuth，仅需邮箱验证码——而且能自给自足：每个账户都可以领取**每日签到**，签到会为余额带来真实额度，因此每个密钥一诞生就有资金，无需银行卡。
 
-有两点让它与众不同。第一，整个注册流程**仅通过 API**：一个普通 gmail 地址、一封验证邮件和一个表单 POST，完全不需要浏览器（2026-10-21 实测：约 7 分钟创建五个账户，随后分两批又创建了十个）。第二，面板对**地址格式非常严格**：它接受 `gmail.com`、`outlook.com` 和 `qq.com`，但会拒绝本地部分中带点或 `+` 的地址，视为“特殊字符”，因此加号/点别名在这里毫无用处，一个**普通**的 `@gmail.com` 邮箱才是可行的通道。
+有两点让它与众不同。首先，整个注册流程**仅通过 API**：一个纯 gmail 地址、一封验证邮件和一个表单 POST，完全不需要浏览器（2026-10-21 实测：约 7 分钟创建五个账户，随后分两批又创建了十个）。其次，面板对**地址格式非常严格**：它接受 `gmail.com`、`outlook.com` 和 `qq.com`，但会拒绝本地部分中带点或 `+` 的地址，视为“特殊字符”，所以加号/点别名在这里没用，一个**纯** `@gmail.com` 邮箱才是可行的通道。
 
-其他陷阱同样具体，且都已编码进工具中：注册调用必须携带与请求验证码时**相同的 cookie jar**，并使用**新鲜的**验证码（10 分钟有效期），密码必须至少 8 个字符，令牌分组必须是有效的 `Default`——用 `default` 创建的令牌在中继上会返回 `403 Group default has been deprecated`。
+其他陷阱同样具体，且都已编码进工具中：注册调用必须携带与请求验证码时**相同的 cookie jar**，并使用**新鲜的**验证码（10 分钟有效期），密码必须至少 8 个字符，令牌分组必须是有效的 `Default`——用 `default` 创建的令牌在转发时会返回 `403 Group default has been deprecated`。
 
-## 🎁 免费额度 — 你能获得多少
+## 🎁 免费额度 — 你能得到多少
 
-| 项目 | 数值 |
+| 项目 | 值 |
 | --- | --- |
 | 注册奖励 | **无**（注册后立即 `quota = 0`） |
 | 免费额度 | **每日签到** — `POST /api/user/checkin` 返回 `quota_awarded` |
 | 实测奖励 | **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** 额度（10 个账户，2026-10-21） |
 | 折合美元 | **每账户每天 $0.012–$0.087**（500 000 额度 = $1）——每次领取随机，**永不过期** |
 | 每日存量 | 10 个账户 ⇒ **259 288 额度 ≈ 每天 $0.5186**，每账户每天一次（强制校验 `checkin_date`） |
-| 银行卡 / 手机 / OAuth | **都不需要** — 仅邮箱验证码，`turnstile_check: false` |
-| 模型 | 17 个在线 id（DeepSeek V4 Flash/Pro、GLM 5.x、Kimi K3、LongCat、Qwen 3.7/3.8） |
+| 银行卡 / 手机 / OAuth | **都不需要**——仅邮箱验证码，`turnstile_check: false` |
+| 模型 | 17 个有效 id（DeepSeek V4 Flash/Pro、GLM 5.x、Kimi K3、LongCat、Qwen 3.7/3.8） |
 | 速率限制 | 未公布；30 次突发调用可正常响应 |
 
-> 💡 免费额度由 Wxctf Ai 设定，可能变化。请在 [ai.wxctf.com](https://ai.wxctf.com) 查看实时数值——并让工具自身的关卡来判定：
+> 💡 免费额度由 Wxctf Ai 设定，可能会变化。请在 [ai.wxctf.com](https://ai.wxctf.com) 查看实时数字——并让工具自身的校验来决定：
 
 ```bash
 ```bash
@@ -66,24 +66,24 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-关卡会统计 `content || reasoning_content`，因此一个把预算花在思考上的推理模型仍能证明密钥有效。
+校验会统计 `content || reasoning_content`，因此即使推理模型把预算花在思考上，仍能证明密钥有效。
 ```
 
 ## 🤖 模型 — 全部 17 个
 
-本批次某个密钥上的 `GET /v1/models`（2026-10-21）——**17 个 id**：
+对这批密钥之一执行 `GET /v1/models`（2026-10-21）——**17 个 id**：
 
-| 系列 | Id |
+| 系列 | Ids |
 | --- | --- |
 | DeepSeek V4 | `deepseek-v4-flash`, `deepseek-v4-flash-0731`, `deepseek-v4-pro`, `deepseek-v4-pro-0813`, `deepseek-v4.1-flash`, `deepseek-v4.1-flash-1017` |
 | GLM 5.x | `glm-5.1`, `glm-5.2`, `glm-5.3`, `glm-5.3-flash`, `glm-5.3-flashx` |
 | 其他 | `kimi-k3`, `LongCat-2.0`, `LongCat-2.5-Preview`, `qwen-3.7-max`, `qwen-3.7-plus`, `qwen-3.8-max` |
 
-`/api/pricing` 列出 18 行（有一个 id 有定价但未提供）且**没有严格 $0 的行**——免费额度是签到，而不是免费模型。最便宜的文本模型是 `deepseek-v4-flash`。
+`/api/pricing` 列出 18 行（有一个 id 有定价但未提供）且**没有严格 $0 的行**——免费额度来自签到，而非免费模型。最便宜的文本模型是 `deepseek-v4-flash`。
 
 ## 🧪 如何使用 API
 
-基础 URL **`https://ai.wxctf.com/v1`** — 兼容 OpenAI；密钥为 48 个字符，**不带 `sk-` 前缀**，放在 `Authorization: Bearer` 请求头中。
+基础 URL **`https://ai.wxctf.com/v1`**——兼容 OpenAI；密钥为 48 个字符，**不带 `sk-` 前缀**，放在 `Authorization: Bearer` 请求头中。
 
 ```python
 from openai import OpenAI
@@ -92,20 +92,20 @@ print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```
 
-额度由同一账户的所有密钥共享，因此签到决定了该账户的每日预算：**每密钥每天一个账户**是自然的形态。
+额度由账户的每个密钥共享，因此签到决定了该账户的每日预算：**每密钥每天一个账户**是自然的形态。
 
 ## 🛠 快速开始
 
 ```bash
 cd wxctf-bulk-apikey
-printf 'socks5://host:port\n' > proxies.txt   # 可选 — 没有它工具将直连运行
-node src/cli.js --screen                     # 针对面板筛查出口
+printf 'socks5://host:port\n' > proxies.txt   # 可选——没有它工具会直连运行
+node src/cli.js --screen                     # 对照面板筛选出口
 node src/cli.js --count 5                    # 五个已充值密钥（无需浏览器）
 node src/cli.js --verify-only                # 重新验证每个密钥
 node src/cli.js --connect-9router            # 将它们注册到本地 9Router
 ```
 
-每密钥一个账户：工具创建一个普通 gmail 邮箱，请求验证码，等待它，用相同的 cookie jar 注册，登录，**领取每日签到**，在 `Default` 分组中铸造令牌，显示密钥，然后才用一次真实补全来验证它。
+每密钥一个账户：工具创建一个纯 gmail 邮箱，请求验证码，等待验证码，用相同的 cookie jar 注册，登录，**领取每日签到**，在 `Default` 分组中铸造令牌，显示密钥，然后才用一次真实补全来验证它。
 
 ### 🖱️ 启动器
 
@@ -117,36 +117,36 @@ node src/cli.js --connect-9router            # 将它们注册到本地 9Router
 
 | 检查 | 结果 |
 | --- | --- |
-| 真实流程中的注册 | **无需浏览器** — 面板没有验证码（`turnstile_check: false`） |
-| 普通 gmail 通道 | Emailnator，**直接**读取；点和 `+` 会被面板拒绝为“特殊字符” |
+| 真实流程中的注册 | **无需浏览器**——面板没有验证码（`turnstile_check: false`） |
+| 纯 gmail 通道 | Emailnator，**直接**读取；点/`+` 会被面板以“特殊字符”为由拒绝 |
 | 验证码邮件 | 来自 `noreply@<panel-mail>` 的 «Wxctf Ai email verification»，**1–25 秒**，6 位验证码，有效期 **10 分钟** |
 | 注册 | **200 `{"success":true}`**，使用相同的 cookie jar + 新鲜验证码 + ≥8 字符密码 |
 | 免费额度 | `POST /api/user/checkin` → `quota_awarded` **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** ⇒ **每账户每天 $0.012–$0.087** |
 | 每日存量 | 10 个账户 ⇒ **259 288 额度 ≈ 每天 $0.5186**（每账户每天一次） |
-| 令牌分组 | **`Default`** — 用 `default` 创建的令牌会返回 `403 Group default has been deprecated` |
+| 令牌分组 | **`Default`**——用 `default` 创建的令牌返回 `403 Group default has been deprecated` |
 | 密钥路由 | 列表显示为掩码；`POST /api/token/<id>/key` 返回 48 字符明文 |
-| 每个密钥的 `GET /v1/models` | **200**，17 个 id |
-| 每个密钥的 `POST /v1/chat/completions` | **200** 且有内容 — **10/10 密钥在线**（`--verify-only`），一个密钥在出口侧故障后在 2/3 出口上重新确认 |
+| 每密钥 `GET /v1/models` | **200**，17 个 id |
+| 每密钥 `POST /v1/chat/completions` | **200** 且有内容——**10/10 密钥有效**（`--verify-only`），一个密钥在出口侧故障后在 2/3 个出口上重新确认 |
 | 端到端速度 | **每个已充值密钥约 50–90 秒**（邮件 → 注册 → 签到 → 密钥 → 验证） |
 
 ## 🧭 工作原理
 
 ```
-inbox (one address per account)                                  a fresh address per account
+收件箱（每账户一个地址）                                          每账户一个新鲜地址
    │
-   ├─▶ sign-up: Wxctf Ai page → e-mail address → code / link from the inbox
-   ├─▶ session: the account's cookies or access token in hand
-   ├─▶ key mint: the account's key endpoint → plaintext key returned once (written to disk immediately)
-   └─▶ live proof: POST https://ai.wxctf.com/v1/chat/completions → real content = the key is live
+   ├─▶ 注册：Wxctf Ai 页面 → 邮箱地址 → 来自收件箱的验证码 / 链接
+   ├─▶ 会话：手握该账户的 cookie 或访问令牌
+   ├─▶ 密钥铸造：该账户的密钥端点 → 明文密钥仅返回一次（立即写入磁盘）
+   └─▶ 实时验证：POST https://ai.wxctf.com/v1/chat/completions → 真实内容 = 密钥有效
 ```
 
 | 步骤 | 调用 | 说明 |
 | --- | --- | --- |
-| 邮箱 | 通过纯 https 使用 Emailnator | 一个**普通** gmail（`plain` 形式，去除点）；面板拒绝点和 `+` |
-| 验证码 | `GET /api/verification?email=` | 约 1–25 秒内到达，来自 `noreply@<panel-mail>`，主题 «Wxctf Ai email verification»，6 位验证码，有效期 10 分钟 |
-| 注册 | `POST /api/user/register` | 请求体 `{username,password,password2,email,verification_code,aff_code}`；**相同 cookie jar**，**新鲜**验证码，密码 ≥8 |
+| 邮箱 | 通过纯 https 使用 Emailnator | 一个**纯** gmail（`plain` 形式，去除点）；面板拒绝点和 `+` |
+| 验证码 | `GET /api/verification?email=` | 约 1–25 秒内从 `noreply@<panel-mail>` 到达，主题 «Wxctf Ai email verification»，6 位验证码，有效期 10 分钟 |
+| 注册 | `POST /api/user/register` | 请求体 `{username,password,password2,email,verification_code,aff_code}`；**相同的 cookie jar**，**新鲜**验证码，密码 ≥8 |
 | 会话 | `POST /api/user/login` | `data.access_token`（Bearer JWT）用于控制台调用 |
-| 资金 | `POST /api/user/checkin` | `{"data":{"checkin_date":"…","quota_awarded":N}}` — 免费额度，在密钥验证前领取 |
+| 资金 | `POST /api/user/checkin` | `{"data":{"checkin_date":"…","quota_awarded":N}}`——免费额度，在验证密钥前领取 |
 | 密钥 | `POST /api/token/` → `POST /api/token/<id>/key` | 分组 **`Default`**（`default` 已弃用 → `403 Group default has been deprecated`）；列表显示掩码密钥，`/key` 返回明文 |
 | 验证 | `GET /v1/models` + `POST /v1/chat/completions` | `content || reasoning_content`；仅当补全返回 200 时才写入密钥 |
 
@@ -167,26 +167,26 @@ node src/cli.js --connect-9router --base http://localhost:20128 --password 12345
 | `--count N` | `1` | 要铸造的账户数 |
 | `--pool FILE` | 若存在则为 `proxies.txt` | 出口，每行一个（`http://`、`socks5://`、`socks4://`） |
 | `--proxy URL` | — | 固定单个出口 |
-| `--exits K` | `6` | 每个账户尝试的出口候选数 |
-| `--model ID` | 最便宜的文本模型 | 用于在线关卡验证的模型 |
+| `--exits K` | `6` | 每账户尝试的出口候选数 |
+| `--model ID` | 最便宜的文本模型 | 用于实时校验的模型 |
 | `--verify-only` | 关闭 | 重新验证 `keys.txt` |
-| `--screen` | 关闭 | 针对面板筛查出口列表 |
+| `--screen` | 关闭 | 对照面板筛选出口列表 |
 | `--connect-9router` | 关闭 | 在此 CLI 旁运行 9Router 连接器 |
 
 ## 🛰️ 在代理之后
 
 **可选。** 没有代理池时，工具会打印 `DIRECT (no proxy)` 并直接从本机调用面板；有代理池时，每个面板请求都固定到列表中的一个出口，一个失效的出口只会损失它自己的那次尝试。
 
-邮箱是**有意直接**读取的：面板的邮件网关与 API 主机是分开的，通过 TLS 拦截出口代理 Emailnator 会返回 `unable to get local issuer certificate`（这曾让一封已送达的验证码看起来像“邮件从未到达”）。读取器强制使用 IPv4，因为此构建会优先解析到 IPv6，而这里没有 IPv6 路由。
+收件箱是**故意直接**读取的：面板的邮件网关与 API 主机是分开的，通过 TLS 拦截出口代理 Emailnator 会返回 `unable to get local issuer certificate`（这曾让一封已送达的验证码看起来像“邮件从未到达”）。读取器强制使用 IPv4，因为此构建优先解析到 IPv6，而这里没有 IPv6 路由。
 
 ## 📄 文件
 
 | 路径 | 内容 |
 | --- | --- |
-| `keys.txt` | 每行一个经在线验证的密钥 — 已被 git 忽略 |
-| `accounts.json` | 每个账户一条 JSON 记录（邮箱、出口、额度、签到奖励、分组、密钥、验证）— 已被 git 忽略 |
-| `proxies.txt` | 你的出口 — 已被 git 忽略 |
-| `out/` | 运行日志和每账户记录 — 已被 git 忽略 |
+| `keys.txt` | 每行一个经实时验证的密钥——已被 git 忽略 |
+| `accounts.json` | 每账户一条 JSON 记录（邮箱、出口、额度、签到奖励、分组、密钥、验证）——已被 git 忽略 |
+| `proxies.txt` | 你的出口——已被 git 忽略 |
+| `out/` | 运行日志和每账户记录——已被 git 忽略 |
 
 ## 🔌 连接到 9Router
 
@@ -203,10 +203,10 @@ node src/connect-9router.js --base http://localhost:20128 --password 123456
 | | |
 | --- | --- |
 | 🏢 提供商 | **Wxctf Ai** — [ai.wxctf.com](https://ai.wxctf.com) |
-| 🎁 提供商提供什么 | 每密钥一个账户 — 每日签到为每个密钥提供资金（约 $0.012–0.087/天，无银行卡，无验证码） |
-| 🔑 一个密钥能给你什么 | 一个作用域为其自身账户的 API 密钥：下方端点上的 17 个模型 id，受你套餐的限制。额度存在于**账户**上，这正是本工具为每密钥创建一个账户的原因 |
+| 🎁 提供商提供什么 | 每密钥一个账户——每日签到为每个密钥充值（约 $0.012–0.087/天，无需银行卡，无验证码） |
+| 🔑 一个密钥能给你什么 | 一个作用域为其自身账户的 API 密钥：下方端点上的 17 个模型 id，受你套餐限制。额度存在于**账户**上，这正是本工具每密钥创建一个账户的原因 |
 | 🌐 API 形态 | 兼容 OpenAI：`POST https://ai.wxctf.com/v1/chat/completions` |
-| 🔒 你的数据 | 仅联系 ai.wxctf.com 和你配置的收件箱后端；密钥保留在你的机器上 |
+| 🔒 你的数据 | 仅联系 ai.wxctf.com 和你配置的收件箱后端；密钥留在你的机器上 |
 
 ## 🐞 问题
 
@@ -218,7 +218,7 @@ MIT © 2026 — 见 [LICENSE](LICENSE)。
 
 <div align="center">
 
-**[MIT](LICENSE)** © 2026 wxctf-bulk-apikey 贡献者
+**[MIT](LICENSE)** © 2026 wxctf-bulk-apikey contributors
 
 </div>
 
