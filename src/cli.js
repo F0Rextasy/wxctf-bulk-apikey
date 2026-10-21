@@ -48,7 +48,9 @@ const EMAILNATOR = 'https://www.emailnator.com';
 const BRAND = /wxctf/i;                       // sender/subject fence for the code mail
 const SENDER = /wxctf\.com/i;                 // panel's verification sender domain
 const PROMPT = 'Reply with the single word: pong';
-const DEFAULT_MODEL_HINTS = /flash|mini|nano|turbo|free/i;
+const DEFAULT_MODEL_PREFS = [/^deepseek-chat$/i, /^deepseek-v3$/i, /deepseek/i, /flash|mini|nano|turbo|free/i];
+// ids this panel serves on another protocol (none for wxctf today)
+const DEFAULT_MODEL_SKIP = /$^/;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
 
 // ------------------------------------------------------------------- options
@@ -210,10 +212,23 @@ function listModels(key, exit) {
   return { status: r.status, ids, text: r.text };
 }
 
-function pickModel(ids) {
-  if (MODEL) return MODEL;
-  const priced = ids.map((m) => ({ id: m.id, p: (m.pricing || {}).input_per_mtok_usd })).filter((m) => Number.isFinite(m.p)).sort((a, b) => a.p - b.p)[0];
-  return (priced && priced.id) || (ids.find((m) => DEFAULT_MODEL_HINTS.test(m.id)) || {}).id || (ids[0] || {}).id || null;
+/**
+ * Candidate gate models, best first: a panel can serve ids that look cheap but
+ * answer 500 or hang on /v1/chat/completions, so the gate walks a short list
+ * instead of betting on one id.
+ */
+function pickModels(ids) {
+  if (MODEL) return [MODEL];
+  const list = ids.map((m) => (typeof m === 'string' ? { id: m } : m));
+  const usable = list.filter((m) => m.id && !DEFAULT_MODEL_SKIP.test(String(m.id)));
+  const priced = usable.map((m) => ({ id: m.id, p: (m.pricing || {}).input_per_mtok_usd })).filter((m) => Number.isFinite(m.p)).sort((a, b) => a.p - b.p).map((m) => m.id);
+  const out = [];
+  for (const id of priced) if (!out.includes(id)) out.push(id);
+  for (const re of DEFAULT_MODEL_PREFS) {
+    for (const m of usable) if (re.test(String(m.id)) && !out.includes(m.id)) out.push(m.id);
+  }
+  for (const m of usable) if (!out.includes(m.id)) out.push(m.id);
+  return out.slice(0, 4);
 }
 
 function chatGate(key, model, exit) {
@@ -228,16 +243,21 @@ function chatGate(key, model, exit) {
 }
 
 function prove(key) {
-  for (let i = 0; i < Math.max(exits.length, 3); i++) {
+  const attempts = Math.max(exits.length, 3);
+  let last = null;
+  for (let i = 0; i < attempts; i++) {
     const exit = nextExit();
     const models = listModels(key, exit);
-    if (models.status !== 200) continue;
-    const model = pickModel(models.ids);
-    const chat = chatGate(key, model, exit);
-    if (chat.live || chat.status === 200) return { models: { status: models.status, count: models.ids.length }, chat: { model, ...chat }, exit, live: chat.live };
+    if (models.status !== 200) { last = { models: { status: models.status, count: 0 }, chat: { model: null, status: 0, content: null, live: false, text: 'models unreachable' }, exit, live: false }; continue; }
+    for (const model of pickModels(models.ids)) {
+      const chat = chatGate(key, model, exit);
+      const res = { models: { status: models.status, count: models.ids.length }, chat: { model, ...chat }, exit, live: chat.live };
+      if (chat.live) return res;
+      last = res;
+      if (chat.status === 200) return res;
+    }
   }
-  const models = listModels(key, nextExit());
-  return { models: { status: models.status, count: models.ids.length }, chat: { model: null, status: 0, content: null, live: false, text: 'relay unreachable' }, exit: null, live: false };
+  return last || { models: { status: 0, count: 0 }, chat: { model: null, status: 0, content: null, live: false, text: 'relay unreachable' }, exit: null, live: false };
 }
 
 // ----------------------------------------------------------------------- mint

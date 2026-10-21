@@ -24,12 +24,6 @@
 
 </div>
 
-<div align="center">
-
-**English** · [Türkçe](README.tr.md) · [中文](README.cn.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Português](README.pt.md)
-
-</div>
-
 ---
 
 ## ✨ Why this exists
@@ -129,6 +123,7 @@ Every check below ran on **2026-10-21** from this package's own CLI (`src/cli.js
 | `POST /v1/chat/completions` per key | **200** with content — **10/10 keys LIVE** (`--verify-only`), one key re-confirmed on 2/3 exits after an exit-side failure |
 | end-to-end speed | **~50–90 s per funded key** (mail → register → check-in → key → proof) |
 
+
 ## 🧭 How it works
 
 ```
@@ -221,7 +216,3 @@ MIT © 2026 — see [LICENSE](LICENSE).
 **[MIT](LICENSE)** © 2026 wxctf-bulk-apikey contributors
 
 </div>
-
----
-
-## ⚠️ Account risk & how to minimise it
