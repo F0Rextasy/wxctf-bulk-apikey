@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Зачем это нужно
@@ -63,7 +62,7 @@ node src/cli.js --verify-only
 
 # вручную (ключи не имеют префикса `sk-`)
 curl https://ai.wxctf.com/v1/chat/completions \
-  -H "Authorization: Bearer UCm8bnazrmux3wRN…" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
@@ -88,7 +87,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
 
 ```python
 from openai import OpenAI
-c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="UCm8bnazrmux3wRN…")
+c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="YOUR_KEY")
 print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```
@@ -129,7 +128,6 @@ node src/cli.js --connect-9router            # зарегистрировать 
 | `GET /v1/models` на каждый ключ | **200**, 17 id |
 | `POST /v1/chat/completions` на каждый ключ | **200** с содержимым — **10/10 ключей LIVE** (`--verify-only`), один ключ переподтверждён на 2/3 выходах после сбоя на стороне выхода |
 | сквозная скорость | **~50–90 с на профинансированный ключ** (почта → регистрация → отметка → ключ → доказательство) |
-
 
 ## 🧭 Как это работает
 

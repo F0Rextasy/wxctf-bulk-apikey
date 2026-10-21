@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Warum es das gibt
@@ -63,7 +62,7 @@ node src/cli.js --verify-only
 
 # von Hand (Schlüssel tragen kein `sk-`-Präfix)
 curl https://ai.wxctf.com/v1/chat/completions \
-  -H "Authorization: Bearer UCm8bnazrmux3wRN…" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
@@ -88,7 +87,7 @@ Basis-URL **`https://ai.wxctf.com/v1`** — OpenAI-kompatibel; Schlüssel sind 4
 
 ```python
 from openai import OpenAI
-c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="UCm8bnazrmux3wRN…")
+c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="YOUR_KEY")
 print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```
@@ -129,7 +128,6 @@ Jede Prüfung unten lief am **21.10.2026** über die CLI dieses Pakets (`src/cli
 | `GET /v1/models` pro Schlüssel | **200**, 17 IDs |
 | `POST /v1/chat/completions` pro Schlüssel | **200** mit Inhalt — **10/10 Schlüssel LIVE** (`--verify-only`), ein Schlüssel nach einem exit-seitigen Fehler auf 2/3 Exits erneut bestätigt |
 | End-to-End-Geschwindigkeit | **~50–90 s pro finanziertem Schlüssel** (Mail → Registrierung → Check-in → Schlüssel → Beweis) |
-
 
 ## 🧭 So funktioniert es
 

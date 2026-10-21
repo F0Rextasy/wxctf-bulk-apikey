@@ -63,7 +63,7 @@ node src/cli.js --verify-only
 
 # by hand (keys carry no `sk-` prefix)
 curl https://ai.wxctf.com/v1/chat/completions \
-  -H "Authorization: Bearer UCm8bnazrmux3wRN…" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
@@ -88,7 +88,7 @@ URL de base **`https://ai.wxctf.com/v1`** — compatible OpenAI ; les clés font
 
 ```python
 from openai import OpenAI
-c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="UCm8bnazrmux3wRN…")
+c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="YOUR_KEY")
 print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```

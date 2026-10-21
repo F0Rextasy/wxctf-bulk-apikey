@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Por que isto existe
@@ -63,7 +62,7 @@ node src/cli.js --verify-only
 
 # by hand (keys carry no `sk-` prefix)
 curl https://ai.wxctf.com/v1/chat/completions \
-  -H "Authorization: Bearer UCm8bnazrmux3wRN…" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
@@ -88,7 +87,7 @@ URL base **`https://ai.wxctf.com/v1`** — compatível com OpenAI; as chaves tê
 
 ```python
 from openai import OpenAI
-c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="UCm8bnazrmux3wRN…")
+c = OpenAI(base_url="https://ai.wxctf.com/v1", api_key="YOUR_KEY")
 print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```
@@ -129,7 +128,6 @@ Toda verificação abaixo foi executada em **2026-10-21** pela própria CLI dest
 | `GET /v1/models` por chave | **200**, 17 ids |
 | `POST /v1/chat/completions` por chave | **200** com conteúdo — **10/10 chaves ATIVAS** (`--verify-only`), uma chave reconfirmada em 2/3 saídas após uma falha do lado da saída |
 | velocidade ponta a ponta | **~50–90 s por chave financiada** (e-mail → registro → check-in → chave → comprovação) |
-
 
 ## 🧭 Como funciona
 
