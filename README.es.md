@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Por qué existe esto
@@ -129,7 +128,6 @@ Cada comprobación a continuación se ejecutó el **2026-10-21** desde el propio
 | `GET /v1/models` por clave | **200**, 17 ids |
 | `POST /v1/chat/completions` por clave | **200** con contenido — **10/10 claves LIVE** (`--verify-only`), una clave reconfirmada en 2/3 salidas tras un fallo del lado de la salida |
 | velocidad de extremo a extremo | **~50–90 s por clave financiada** (correo → registro → check-in → clave → prueba) |
-
 
 ## 🧭 Cómo funciona
 

@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Bu neden var
@@ -129,7 +128,6 @@ Aşağıdaki her kontrol **2026-10-21** tarihinde bu paketin kendi CLI'sinden (`
 | anahtar başına `GET /v1/models` | **200**, 17 id |
 | anahtar başına `POST /v1/chat/completions` | içerikle **200** — **10/10 anahtar CANLI** (`--verify-only`), bir anahtar çıkış tarafı hatasından sonra 2/3 çıkışta yeniden doğrulandı |
 | uçtan uca hız | **fonlanmış anahtar başına ~50–90 s** (posta → kayıt → giriş → anahtar → kanıt) |
-
 
 ## 🧭 Nasıl çalışır
 

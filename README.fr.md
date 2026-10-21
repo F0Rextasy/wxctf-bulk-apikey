@@ -30,7 +30,6 @@
 
 </div>
 
-
 ---
 
 ## ✨ Pourquoi ça existe
@@ -129,7 +128,6 @@ Chaque vérification ci-dessous a été exécutée le **2026-10-21** depuis le C
 | `GET /v1/models` par clé | **200**, 17 ids |
 | `POST /v1/chat/completions` par clé | **200** avec contenu — **10/10 clés LIVE** (`--verify-only`), une clé reconfirmée sur 2/3 sorties après une défaillance côté sortie |
 | vitesse de bout en bout | **~50–90 s par clé approvisionnée** (mail → inscription → check-in → clé → preuve) |
-
 
 ## 🧭 Comment ça marche
 

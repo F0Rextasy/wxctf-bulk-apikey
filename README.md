@@ -129,7 +129,6 @@ Every check below ran on **2026-10-21** from this package's own CLI (`src/cli.js
 | `POST /v1/chat/completions` per key | **200** with content — **10/10 keys LIVE** (`--verify-only`), one key re-confirmed on 2/3 exits after an exit-side failure |
 | end-to-end speed | **~50–90 s per funded key** (mail → register → check-in → key → proof) |
 
-
 ## 🧭 How it works
 
 ```
