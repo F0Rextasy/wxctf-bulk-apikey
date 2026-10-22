@@ -66,7 +66,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a live key.
+The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a verified keys.
 ```
 
 ## 🤖 Modelle — alle 17 davon

@@ -66,7 +66,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a live key.
+The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a verified keys.
 ```
 
 ## 🤖 Models — all 17 of them
@@ -126,7 +126,7 @@ Every check below ran on **2026-10-21** from this package's own CLI (`src/cli.js
 | token group | **`Default`** — a token created with `default` answers `403 Group default has been deprecated` |
 | key route | the list shows it masked; `POST /api/token/<id>/key` returns the 48-char plaintext |
 | `GET /v1/models` per key | **200**, 17 ids |
-| `POST /v1/chat/completions` per key | **200** with content — **10/10 keys LIVE** (`--verify-only`), one key re-confirmed on 2/3 exits after an exit-side failure |
+| `POST /v1/chat/completions` per key | **200** with content — **verified working** (`--verify-only`), one key re-confirmed on 2/3 exits after an exit-side failure |
 | end-to-end speed | **~50–90 s per funded key** (mail → register → check-in → key → proof) |
 
 ## 🧭 How it works
