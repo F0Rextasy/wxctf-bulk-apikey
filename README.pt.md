@@ -21,7 +21,7 @@
 [![OmniRoute](https://img.shields.io/badge/OmniRoute-connector-8B5CF6?style=for-the-badge)](#-connect-to-omniroute)
 [![X](https://img.shields.io/badge/X-%40bigbullapp-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/bigbullapp)
 
-[🛠 Início rápido](#-quick-start) · [🎁 Nível gratuito](#-free-tier--how-much-you-get) · [🤖 Modelos](#-models--all-17-of-them) · [🧪 Use a API](#-how-to-use-the-api) · [✅ Verificado](#-verified-working--every-key-is-tested) · [🧭 Como funciona](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [⚙️ Opções](#️-cli-options) · [🛰️ Proxies](#️-behind-a-proxy) · [🐞 Problemas](#-issues)
+[🛠 Início rápido](#-quick-start) · [🎁 Nível gratuito](#-free-tier--how-much-you-get) · [🤖 Modelos](#-models--all-17-of-them) · [🧪 Use a API](#-how-to-use-the-api) · [✅ Verificado](#-verified-working--every-key-is-tested) · [🧭 Como funciona](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [🔌 OmniRoute](#-connect-to-omniroute) · [⚙️ Opções](#️-cli-options) · [🛰️ Proxies](#️-behind-a-proxy) · [🐞 Problemas](#-issues)
 
 </div>
 
@@ -37,7 +37,7 @@
 
 Wxctf Ai (ai.wxctf.com) é um fork do New API que mantém o registro **aberto** — sem captcha, sem OAuth, apenas código por e-mail — e se paga sozinho: cada conta pode resgatar um **check-in diário** que deposita cota real no saldo, então cada chave já nasce financiada sem cartão.
 
-Duas coisas o tornam incomum. Primeiro, todo o cadastro é **somente via API**: um endereço gmail simples, um e-mail de verificação e um POST de formulário, sem navegador algum (medido em 2026-10-21: cinco contas em ~7 minutos, depois mais dez em dois lotes). Segundo, o painel é **rigoroso quanto ao formato do endereço**: aceita `gmail.com`, `outlook.com` e `qq.com`, mas recusa qualquer coisa com um ponto ou um `+` na parte local como "caractere especial", então aliases com plus/ponto são inúteis aqui e uma caixa **simples** `@gmail.com` é o trilho que funciona.
+Duas coisas o tornam incomum. Primeiro, todo o cadastro é **somente via API**: um endereço gmail simples, um e-mail de verificação e um POST de formulário, sem navegador algum (medido em 2026-10-21: cinco contas em ~7 minutos, depois mais dez em dois lotes). Segundo, o painel é **rígido quanto ao formato do endereço**: aceita `gmail.com`, `outlook.com` e `qq.com`, mas recusa qualquer coisa com ponto ou `+` na parte local como "caractere especial", então aliases com ponto/mais são inúteis aqui e uma caixa **simples** `@gmail.com` é o trilho que funciona.
 
 As outras armadilhas são igualmente específicas e todas codificadas na ferramenta: a chamada de registro deve carregar o **mesmo cookie jar** que solicitou o código com um código **novo** (TTL de 10 minutos), a senha deve ter pelo menos 8 caracteres, e o grupo do token deve ser o `Default` ativo — um token criado com `default` responde `403 Group default has been deprecated` no relay.
 
@@ -49,7 +49,7 @@ As outras armadilhas são igualmente específicas e todas codificadas na ferrame
 | Nível gratuito | **check-in diário** — `POST /api/user/checkin` retorna `quota_awarded` |
 | Prêmios medidos | **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** de cota (10 contas, 2026-10-21) |
 | Em USD | **$0.012–$0.087 por conta por dia** (500 000 de cota = $1) — aleatório por resgate, **nunca expira** |
-| Estoque diário | 10 contas ⇒ **259 288 de cota ≈ $0.5186 por dia**, uma vez por conta por dia (`checkin_date` é imposto) |
+| Estoque diário | 10 contas ⇒ **259 288 de cota ≈ $0.5186 por dia**, uma vez por conta por dia (`checkin_date` é aplicado) |
 | Cartão / telefone / OAuth | **nenhum deles** — apenas código por e-mail, `turnstile_check: false` |
 | Modelos | 17 ids ativos (DeepSeek V4 Flash/Pro, GLM 5.x, Kimi K3, LongCat, Qwen 3.7/3.8) |
 | Limite de taxa | não publicado; uma rajada de 30 chamadas é respondida normalmente |
@@ -58,6 +58,7 @@ As outras armadilhas são igualmente específicas e todas codificadas na ferrame
 
 ```bash
 ```bash
+
 # every key in keys.txt: the model list plus one real completion
 node src/cli.js --verify-only
 
@@ -67,7 +68,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a verified keys.
+The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a live key.
 ```
 
 ## 🤖 Modelos — todos os 17
@@ -93,7 +94,7 @@ print(c.chat.completions.create(model="deepseek-v4-flash",
       messages=[{"role":"user","content":"gday"}]).choices[0].message.content)
 ```
 
-A cota é compartilhada por todas as chaves de uma conta, então o check-in controla o orçamento diário dessa conta: **uma conta por chave por dia** é o formato natural.
+A cota é compartilhada por todas as chaves de uma conta, então o check-in controla o orçamento diário daquela conta: **uma conta por chave por dia** é o formato natural.
 
 ## 🛠 Início rápido
 
@@ -106,19 +107,19 @@ node src/cli.js --verify-only                # re-prove every key
 node src/cli.js --connect-9router            # register them with a local 9Router
 ```
 
-Uma conta por chave: a ferramenta cria uma caixa gmail simples, solicita o código, espera por ele, registra com o mesmo cookie jar, faz login, **resgata o check-in diário**, cria um token no grupo `Default`, revela a chave e só então a comprova com uma conclusão real.
+Uma conta por chave: a ferramenta cria uma caixa de correio gmail simples, solicita o código, espera por ele, registra com o mesmo cookie jar, faz login, **resgata o check-in diário**, gera um token no grupo `Default`, revela a chave e só então a comprova com uma conclusão real.
 
 ### 🖱️ O launcher
 
-O launcher pede a lista de proxies (opcional) e a quantidade de contas, lembra de ambos e executa a CLI — além de `--verify-only`, `--screen` e o conector 9Router.
+O launcher pede a lista de proxies (opcional) e o número de contas, memoriza ambos e executa a CLI — além de `--verify-only`, `--screen` e o conector 9Router.
 
-## ✅ Verificado funcionando — toda chave é testada
+## ✅ Verificado e funcionando — toda chave é testada
 
-Todas as verificações abaixo foram executadas em **2026-10-21** pela própria CLI deste pacote (`src/cli.js`), através de saídas públicas (sem VPN no processo).
+Toda verificação abaixo foi executada em **2026-10-21** pela própria CLI deste pacote (`src/cli.js`), através de saídas públicas (sem VPN no meio).
 
 | Verificação | Resultado |
 | --- | --- |
-| cadastro em fluxo real | **sem navegador necessário** — o painel não tem captcha (`turnstile_check: false`) |
+| cadastro em um fluxo real | **nenhum navegador necessário** — o painel não tem captcha (`turnstile_check: false`) |
 | trilho gmail simples | Emailnator, lido **diretamente**; pontos/`+` são recusados pelo painel como "caracteres especiais" |
 | e-mail do código | «Wxctf Ai email verification» de `noreply@<panel-mail>`, **1–25 s**, código de 6 caracteres, válido por **10 minutos** |
 | registro | **200 `{"success":true}`** com o mesmo cookie jar + um código novo + uma senha de ≥8 caracteres |
@@ -127,8 +128,14 @@ Todas as verificações abaixo foram executadas em **2026-10-21** pela própria 
 | grupo do token | **`Default`** — um token criado com `default` responde `403 Group default has been deprecated` |
 | rota da chave | a lista a mostra mascarada; `POST /api/token/<id>/key` retorna o texto simples de 48 caracteres |
 | `GET /v1/models` por chave | **200**, 17 ids |
-| `POST /v1/chat/completions` por chave | **200** com conteúdo — **10/10 chaves LIVE** (`--verify-only`), uma chave reconfirmada em 2/3 saídas após uma falha do lado da saída |
+| `POST /v1/chat/completions` por chave | **200** com conteúdo — **toda chave verificada** (`--verify-only`), uma chave reconfirmada em 2/3 saídas após uma falha do lado da saída |
 | velocidade ponta a ponta | **~50–90 s por chave financiada** (e-mail → registro → check-in → chave → comprovação) |
+
+> **Portões de qualidade.** Toda chave aqui passou por um `chat-200` ao vivo antes de ser gravada em `keys.txt`
+> (chaves mortas nunca são entregues). As combinações do roteador seguem a mesma regra no nível do modelo: uma entrada é
+> adicionada **somente se o modelo responder `chat-200` e puder chamar ferramentas** — um modelo sem suporte a ferramentas,
+> uma chave morta ou um provedor morto é descartado em vez de adicionado. Reexecute a etapa de verificação a qualquer momento;
+> as falhas são relatadas, nunca ocultadas.
 
 ## 🧭 Como funciona
 
@@ -141,7 +148,7 @@ inbox (one address per account)                                  a fresh address
    └─▶ live proof: POST https://ai.wxctf.com/v1/chat/completions → real content = the key is live
 ```
 
-| Etapa | Chamada | Observações |
+| Etapa | Chamada | Notas |
 | --- | --- | --- |
 | caixa de correio | Emailnator via https simples | um gmail **simples** (formato `plain`, pontos removidos); o painel recusa pontos e `+` |
 | código | `GET /api/verification?email=` | chega em ~1–25 s de `noreply@<panel-mail>`, assunto «Wxctf Ai email verification», código de 6 caracteres, válido por 10 minutos |
@@ -172,20 +179,20 @@ node src/cli.js --connect-9router --base http://localhost:20128 --password 12345
 | `--model ID` | modelo de texto mais barato | modelo usado para o gate ao vivo |
 | `--verify-only` | desligado | recomprova `keys.txt` |
 | `--screen` | desligado | avalia a lista de saídas contra o painel |
-| `--connect-9router` | desligado | executa o conector 9Router junto a esta CLI |
+| `--connect-9router` | desligado | executa o conector 9Router ao lado desta CLI |
 
 ## 🛰️ Atrás de um proxy
 
-**Opcional.** Sem um pool, a ferramenta imprime `DIRECT (no proxy)` e chama o painel diretamente desta máquina; com um, cada requisição ao painel é fixada a uma saída da lista e uma saída morta custa apenas sua própria tentativa.
+**Opcional.** Sem um pool, a ferramenta imprime `DIRECT (no proxy)` e chama o painel diretamente desta máquina; com um, toda requisição ao painel é fixada a uma saída da lista e uma saída morta custa apenas sua própria tentativa.
 
-A caixa de correio é lida **diretamente** de propósito: o gate de e-mail do painel é separado do host da API, e usar proxy no Emailnator através de uma saída com interceptação TLS responde `unable to get local issuer certificate` (o que uma vez fez um código entregue parecer "e-mail nunca chegou"). O leitor força IPv4 porque esta build resolve para IPv6 primeiro e não há rota IPv6.
+A caixa de correio é lida **diretamente** de propósito: o gate de e-mail do painel é separado do host da API, e passar o Emailnator por uma saída com interceptação TLS responde `unable to get local issuer certificate` (o que uma vez fez um código entregue parecer "e-mail nunca chegou"). O leitor força IPv4 porque esta build resolve para IPv6 primeiro e não há rota IPv6.
 
 ## 📄 Arquivos
 
 | Caminho | Conteúdo |
 | --- | --- |
 | `keys.txt` | uma chave comprovada ao vivo por linha — ignorado pelo git |
-| `accounts.json` | um registro JSON por conta (caixa de correio, saída, cota, prêmio de check-in, grupo, chave, comprovação) — ignorado pelo git |
+| `accounts.json` | um registro JSON por conta (caixa de correio, saída, cota, prêmio do check-in, grupo, chave, comprovação) — ignorado pelo git |
 | `proxies.txt` | suas saídas — ignorado pelo git |
 | `out/` | logs de execução e registros por conta — ignorado pelo git |
 
@@ -208,19 +215,20 @@ node src/connect-omniroute.js --base http://localhost:20128 --password 123456
 ```
 
 Padrões: `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--model deepseek-v4-flash`. Os modelos são servidos como `wxctf/<model id>` e o roteador faz balanceamento de carga entre todas as chaves do nó.
+
 ## 🔑 O que uma chave oferece
 
 | | |
 | --- | --- |
 | 🏢 Provedor | **Wxctf Ai** — [ai.wxctf.com](https://ai.wxctf.com) |
-| 🎁 O que o provedor dá | uma conta por chave — o check-in diário financia cada chave (~$0.012–0.087/dia, sem cartão, sem captcha) |
+| 🎁 O que o provedor oferece | uma conta por chave — o check-in diário financia cada chave (~$0.012–0.087/dia, sem cartão, sem captcha) |
 | 🔑 O que uma chave oferece | uma chave de API limitada à sua própria conta: os 17 ids de modelo no endpoint abaixo, nos limites do seu plano. A cota fica na **conta**, e é exatamente por isso que esta ferramenta cria uma conta por chave |
 | 🌐 Formato da API | compatível com OpenAI: `POST https://ai.wxctf.com/v1/chat/completions` |
 | 🔒 Seus dados | apenas ai.wxctf.com e o backend de caixa de correio que você configurar são contatados; as chaves ficam na sua máquina |
 
 ## 🐞 Problemas
 
-Se a Wxctf Ai mudar sua política de endereços, o formato de registro, o grupo do token ou o catálogo, a ferramenta para nessa etapa e avisa. **[Abra uma issue](../../issues)** com o comando e a saída exata.
+Se a Wxctf Ai mudar sua política de endereços, o formato do registro, o grupo do token ou o catálogo, a ferramenta para nessa etapa e avisa. **[Abra uma issue](../../issues)** com o comando e a saída exata.
 
 ## 📄 Licença
 
@@ -231,7 +239,3 @@ MIT © 2026 — veja [LICENSE](LICENSE).
 **[MIT](LICENSE)** © 2026 wxctf-bulk-apikey contributors
 
 </div>
-
----
-
-## ⚠️ Risco de conta e como minimizar

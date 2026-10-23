@@ -21,7 +21,7 @@
 [![OmniRoute](https://img.shields.io/badge/OmniRoute-connector-8B5CF6?style=for-the-badge)](#-connect-to-omniroute)
 [![X](https://img.shields.io/badge/X-%40bigbullapp-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/bigbullapp)
 
-[🛠 Démarrage rapide](#-quick-start) · [🎁 Offre gratuite](#-free-tier--how-much-you-get) · [🤖 Modèles](#-models--all-17-of-them) · [🧪 Utiliser l'API](#-how-to-use-the-api) · [✅ Vérifié](#-verified-working--every-key-is-tested) · [🧭 Comment ça marche](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [⚙️ Options](#️-cli-options) · [🛰️ Proxys](#️-behind-a-proxy) · [🐞 Problèmes](#-issues)
+[🛠 Démarrage rapide](#-quick-start) · [🎁 Niveau gratuit](#-free-tier--how-much-you-get) · [🤖 Modèles](#-models--all-17-of-them) · [🧪 Utiliser l'API](#-how-to-use-the-api) · [✅ Vérifié](#-verified-working--every-key-is-tested) · [🧭 Comment ça marche](#-how-it-works) · [🔌 9Router](#-connect-to-9router) · [🔌 OmniRoute](#-connect-to-omniroute) · [⚙️ Options](#️-cli-options) · [🛰️ Proxys](#️-behind-a-proxy) · [🐞 Problèmes](#-issues)
 
 </div>
 
@@ -33,31 +33,32 @@
 
 ---
 
-## ✨ Pourquoi cela existe
+## ✨ Pourquoi ce projet existe
 
-Wxctf Ai (ai.wxctf.com) est un fork de New API qui garde l'inscription **ouverte** — pas de captcha, pas d'OAuth, uniquement un code par e-mail — et qui s'autofinance : chaque compte peut réclamer un **check-in quotidien** qui dépose un vrai quota sur le solde, si bien que chaque clé naît approvisionnée sans carte.
+Wxctf Ai (ai.wxctf.com) est un fork de New API qui garde l'inscription **ouverte** — pas de captcha, pas d'OAuth, uniquement un code par e-mail — et qui s'autofinance : chaque compte peut réclamer un **check-in quotidien** qui dépose du quota réel sur le solde, si bien que chaque clé naît approvisionnée sans carte bancaire.
 
-Deux choses le rendent inhabituel. D'abord, toute l'inscription est **uniquement via API** : une adresse gmail simple, un e-mail de vérification et un POST de formulaire, sans aucun navigateur (mesuré le 2026-10-21 : cinq comptes en ~7 minutes, puis dix de plus en deux lots). Ensuite, le panneau est **strict sur la forme de l'adresse** : il accepte `gmail.com`, `outlook.com` et `qq.com`, mais refuse tout ce qui contient un point ou un `+` dans la partie locale comme « caractère spécial », donc les alias avec plus/point sont inutiles ici et une boîte **simple** `@gmail.com` est la voie qui fonctionne.
+Deux choses le rendent inhabituel. D'abord, toute l'inscription se fait **uniquement via l'API** : une adresse gmail simple, un e-mail de vérification et un POST de formulaire, sans aucun navigateur (mesuré le 2026-10-21 : cinq comptes en ~7 minutes, puis dix de plus en deux lots). Ensuite, le panneau est **strict sur la forme de l'adresse** : il accepte `gmail.com`, `outlook.com` et `qq.com`, mais refuse tout ce qui contient un point ou un `+` dans la partie locale comme « caractère spécial », donc les alias avec point/plus sont inutiles ici et une boîte **simple** `@gmail.com` est la voie qui fonctionne.
 
-Les autres pièges sont tout aussi spécifiques et tous encodés dans l'outil : l'appel d'inscription doit porter le **même pot de cookies** que celui qui a demandé le code avec un code **frais** (TTL de 10 minutes), le mot de passe doit comporter au moins 8 caractères, et le groupe du token doit être le `Default` actif — un token créé avec `default` répond `403 Group default has been deprecated` sur le relais.
+Les autres pièges sont tout aussi spécifiques et tous encodés dans l'outil : l'appel d'inscription doit porter le **même pot de cookies** que celui qui a demandé le code avec un code **frais** (TTL de 10 minutes), le mot de passe doit comporter au moins 8 caractères, et le groupe du jeton doit être le `Default` actif — un jeton créé avec `default` répond `403 Group default has been deprecated` sur le relais.
 
-## 🎁 Offre gratuite — ce que vous obtenez
+## 🎁 Niveau gratuit — ce que vous obtenez
 
 | Quoi | Valeur |
 | --- | --- |
 | Bonus d'inscription | **aucun** (`quota = 0` juste après l'inscription) |
-| Offre gratuite | **check-in quotidien** — `POST /api/user/checkin` renvoie `quota_awarded` |
+| Niveau gratuit | **check-in quotidien** — `POST /api/user/checkin` renvoie `quota_awarded` |
 | Récompenses mesurées | **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** quota (10 comptes, 2026-10-21) |
 | En USD | **0,012–0,087 $ par compte et par jour** (500 000 quota = 1 $) — aléatoire à chaque réclamation, **n'expire jamais** |
 | Stock quotidien | 10 comptes ⇒ **259 288 quota ≈ 0,5186 $ par jour**, une fois par compte et par jour (`checkin_date` est appliqué) |
 | Carte / téléphone / OAuth | **aucun d'entre eux** — uniquement un code par e-mail, `turnstile_check: false` |
 | Modèles | 17 ids actifs (DeepSeek V4 Flash/Pro, GLM 5.x, Kimi K3, LongCat, Qwen 3.7/3.8) |
-| Limite de débit | non publiée ; une rafale de 30 appels est traitée normalement |
+| Limite de débit | non publiée ; une rafale de 30 appels reçoit une réponse normale |
 
-> 💡 L'offre gratuite est définie par Wxctf Ai et peut changer. Vérifiez les chiffres en direct sur [ai.wxctf.com](https://ai.wxctf.com) — et laissez la porte de l'outil décider :
+> 💡 Le niveau gratuit est défini par Wxctf Ai et peut changer. Consultez les chiffres en direct sur [ai.wxctf.com](https://ai.wxctf.com) — et laissez la porte de contrôle de l'outil décider :
 
 ```bash
 ```bash
+
 # every key in keys.txt: the model list plus one real completion
 node src/cli.js --verify-only
 
@@ -67,7 +68,7 @@ curl https://ai.wxctf.com/v1/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"gday"}],"max_tokens":64}'
 ```
 
-La porte compte `content || reasoning_content`, donc un modèle de raisonnement qui dépense son budget en réflexion prouve quand même qu'une clé est active.
+The gate counts `content || reasoning_content`, so a reasoning model that spends its budget on thinking still proves a live key.
 ```
 
 ## 🤖 Modèles — les 17 au complet
@@ -80,7 +81,7 @@ La porte compte `content || reasoning_content`, donc un modèle de raisonnement 
 | GLM 5.x | `glm-5.1`, `glm-5.2`, `glm-5.3`, `glm-5.3-flash`, `glm-5.3-flashx` |
 | Autres | `kimi-k3`, `LongCat-2.0`, `LongCat-2.5-Preview`, `qwen-3.7-max`, `qwen-3.7-plus`, `qwen-3.8-max` |
 
-`/api/pricing` liste 18 lignes (un id est tarifé mais non servi) et **aucune ligne à 0 $ strict** — l'offre gratuite est le check-in, pas un modèle gratuit. Le modèle texte le moins cher est `deepseek-v4-flash`.
+`/api/pricing` liste 18 lignes (un id est tarifé mais non servi) et **aucune ligne strictement à 0 $** — le niveau gratuit est le check-in, pas un modèle gratuit. Le modèle texte le moins cher est `deepseek-v4-flash`.
 
 ## 🧪 Comment utiliser l'API
 
@@ -106,7 +107,7 @@ node src/cli.js --verify-only                # re-prove every key
 node src/cli.js --connect-9router            # register them with a local 9Router
 ```
 
-Un compte par clé : l'outil crée une boîte gmail simple, demande le code, l'attend, s'inscrit avec le même pot de cookies, se connecte, **réclame le check-in quotidien**, génère un token dans le groupe `Default`, révèle la clé et ne la prouve qu'ensuite avec une vraie complétion.
+Un compte par clé : l'outil crée une boîte gmail simple, demande le code, l'attend, s'inscrit avec le même pot de cookies, se connecte, **réclame le check-in quotidien**, génère un jeton dans le groupe `Default`, révèle la clé et ne la prouve qu'ensuite avec une vraie complétion.
 
 ### 🖱️ Le lanceur
 
@@ -121,14 +122,20 @@ Chaque vérification ci-dessous a été exécutée le **2026-10-21** depuis le C
 | inscription dans un flux réel | **aucun navigateur nécessaire** — le panneau n'a pas de captcha (`turnstile_check: false`) |
 | voie gmail simple | Emailnator, lu **directement** ; les points/`+` sont refusés par le panneau comme « caractères spéciaux » |
 | e-mail de code | « Wxctf Ai email verification » de `noreply@<panel-mail>`, **1–25 s**, code de 6 caractères, valide **10 minutes** |
-| inscription | **200 `{"success":true}`** avec le même pot de cookies + un code frais + un mot de passe ≥8 caractères |
-| offre gratuite | `POST /api/user/checkin` → `quota_awarded` **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** ⇒ **0,012–0,087 $ par compte et par jour** |
+| inscription | **200 `{"success":true}`** avec le même pot de cookies + un code frais + un mot de passe de ≥8 caractères |
+| niveau gratuit | `POST /api/user/checkin` → `quota_awarded` **6247 · 11829 · 15361 · 21586 · 26079 · 26112 · 31742 · 36089 · 40940 · 43303** ⇒ **0,012–0,087 $ par compte et par jour** |
 | stock quotidien | 10 comptes ⇒ **259 288 quota ≈ 0,5186 $/jour** (une fois par compte et par jour) |
-| groupe du token | **`Default`** — un token créé avec `default` répond `403 Group default has been deprecated` |
+| groupe du jeton | **`Default`** — un jeton créé avec `default` répond `403 Group default has been deprecated` |
 | route de la clé | la liste l'affiche masquée ; `POST /api/token/<id>/key` renvoie le texte en clair de 48 caractères |
 | `GET /v1/models` par clé | **200**, 17 ids |
-| `POST /v1/chat/completions` par clé | **200** avec contenu — **10/10 clés ACTIVES** (`--verify-only`), une clé reconfirmée sur 2/3 sorties après un échec côté sortie |
+| `POST /v1/chat/completions` par clé | **200** avec contenu — **chaque clé vérifiée** (`--verify-only`), une clé reconfirmée sur 2/3 sorties après une défaillance côté sortie |
 | vitesse de bout en bout | **~50–90 s par clé approvisionnée** (mail → inscription → check-in → clé → preuve) |
+
+> **Portes de qualité.** Chaque clé ici a passé un `chat-200` en direct avant d'être écrite dans `keys.txt`
+> (les clés mortes ne sont jamais livrées). Les combinaisons du routeur suivent la même règle au niveau du modèle : une entrée n'est
+> ajoutée **que si le modèle répond `chat-200` et peut appeler des outils** — un modèle sans prise en charge des outils,
+> une clé morte ou un fournisseur mort est écarté au lieu d'être ajouté. Relancez l'étape de vérification à tout moment ;
+> les échecs sont signalés, jamais cachés.
 
 ## 🧭 Comment ça marche
 
@@ -143,11 +150,11 @@ inbox (one address per account)                                  a fresh address
 
 | Étape | Appel | Remarques |
 | --- | --- | --- |
-| boîte mail | Emailnator en https simple | un gmail **simple** (forme `plain`, points supprimés) ; le panneau refuse les points et le `+` |
+| boîte mail | Emailnator en https simple | un gmail **simple** (forme `plain`, points supprimés) ; le panneau refuse les points et `+` |
 | code | `GET /api/verification?email=` | arrive en ~1–25 s de `noreply@<panel-mail>`, objet « Wxctf Ai email verification », code de 6 caractères, valide 10 minutes |
 | inscription | `POST /api/user/register` | corps `{username,password,password2,email,verification_code,aff_code}` ; **même pot de cookies**, code **frais**, mot de passe ≥8 |
-| session | `POST /api/user/login` | `data.access_token` (Bearer JWT) pour les appels de la console |
-| fonds | `POST /api/user/checkin` | `{"data":{"checkin_date":"…","quota_awarded":N}}` — l'offre gratuite, réclamée avant que la clé ne soit prouvée |
+| session | `POST /api/user/login` | `data.access_token` (JWT Bearer) pour les appels de la console |
+| fonds | `POST /api/user/checkin` | `{"data":{"checkin_date":"…","quota_awarded":N}}` — le niveau gratuit, réclamé avant que la clé ne soit prouvée |
 | clé | `POST /api/token/` → `POST /api/token/<id>/key` | groupe **`Default`** (`default` est obsolète → `403 Group default has been deprecated`) ; la liste affiche la clé masquée et `/key` renvoie le texte en clair |
 | preuve | `GET /v1/models` + `POST /v1/chat/completions` | `content || reasoning_content` ; la clé n'est écrite que lorsque la complétion répond 200 |
 
@@ -165,13 +172,13 @@ node src/cli.js --connect-9router --base http://localhost:20128 --password 12345
 
 | Option | Défaut | Signification |
 | --- | --- | --- |
-| `--count N` | `1` | comptes à créer |
+| `--count N` | `1` | comptes à générer |
 | `--pool FILE` | `proxies.txt` s'il est présent | sorties, une par ligne (`http://`, `socks5://`, `socks4://`) |
 | `--proxy URL` | — | épingler une seule sortie |
 | `--exits K` | `6` | sorties candidates essayées par compte |
-| `--model ID` | modèle texte le moins cher | modèle utilisé pour la porte en direct |
+| `--model ID` | modèle texte le moins cher | modèle utilisé pour la porte de contrôle en direct |
 | `--verify-only` | désactivé | revérifier `keys.txt` |
-| `--screen` | désactivé | valider la liste des sorties contre le panneau |
+| `--screen` | désactivé | vérifier la liste des sorties par rapport au panneau |
 | `--connect-9router` | désactivé | exécuter le connecteur 9Router à côté de ce CLI |
 
 ## 🛰️ Derrière un proxy
@@ -184,7 +191,7 @@ La boîte mail est lue **directement** à dessein : la porte mail du panneau est
 
 | Chemin | Contenu |
 | --- | --- |
-| `keys.txt` | une clé prouvée active par ligne — ignoré par git |
+| `keys.txt` | une clé prouvée en direct par ligne — ignoré par git |
 | `accounts.json` | un enregistrement JSON par compte (boîte mail, sortie, quota, récompense de check-in, groupe, clé, preuve) — ignoré par git |
 | `proxies.txt` | vos sorties — ignoré par git |
 | `out/` | journaux d'exécution et enregistrements par compte — ignoré par git |
@@ -197,7 +204,7 @@ La boîte mail est lue **directement** à dessein : la porte mail du panneau est
 node src/connect-9router.js --base http://localhost:20128 --password 123456
 ```
 
-Valeurs par défaut : `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--model deepseek-v4-flash`. Les modèles sont servis sous `wxctf/<model id>` et le routeur répartit la charge sur toutes les clés du nœud.
+Défauts : `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--model deepseek-v4-flash`. Les modèles sont servis sous `wxctf/<model id>` et le routeur répartit la charge sur toutes les clés du nœud.
 
 ## 🔌 Connexion à OmniRoute
 
@@ -207,20 +214,21 @@ Valeurs par défaut : `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `-
 node src/connect-omniroute.js --base http://localhost:20128 --password 123456
 ```
 
-Valeurs par défaut : `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--model deepseek-v4-flash`. Les modèles sont servis sous `wxctf/<model id>` et le routeur répartit la charge sur toutes les clés du nœud.
+Défauts : `--prefix wxctf`, `--base-url https://ai.wxctf.com/v1`, `--model deepseek-v4-flash`. Les modèles sont servis sous `wxctf/<model id>` et le routeur répartit la charge sur toutes les clés du nœud.
+
 ## 🔑 Ce qu'une clé vous apporte
 
 | | |
 | --- | --- |
 | 🏢 Fournisseur | **Wxctf Ai** — [ai.wxctf.com](https://ai.wxctf.com) |
 | 🎁 Ce que le fournisseur donne | un compte par clé — le check-in quotidien approvisionne chaque clé (~0,012–0,087 $/jour, sans carte, sans captcha) |
-| 🔑 Ce qu'une clé vous apporte | une clé API limitée à son propre compte : les 17 ids de modèles sur le point de terminaison ci-dessous, aux limites de votre offre. Le quota vit sur le **compte**, ce qui explique précisément pourquoi cet outil crée un compte par clé |
+| 🔑 Ce qu'une clé vous apporte | une clé API limitée à son propre compte : les 17 ids de modèles sur le point de terminaison ci-dessous, aux limites de votre forfait. Le quota vit sur le **compte**, ce qui explique précisément pourquoi cet outil crée un compte par clé |
 | 🌐 Forme de l'API | compatible OpenAI : `POST https://ai.wxctf.com/v1/chat/completions` |
 | 🔒 Vos données | seuls ai.wxctf.com et le backend de boîte mail que vous configurez sont contactés ; les clés restent sur votre machine |
 
 ## 🐞 Problèmes
 
-Si Wxctf Ai modifie sa politique d'adresses, la forme de son inscription, le groupe du token ou le catalogue, l'outil s'arrête à cette étape et le signale. **[Ouvrez un ticket](../../issues)** avec la commande et la sortie exacte.
+Si Wxctf Ai modifie sa politique d'adresses, la forme de son inscription, le groupe du jeton ou le catalogue, l'outil s'arrête à cette étape et le signale. **[Ouvrez un ticket](../../issues)** avec la commande et la sortie exacte.
 
 ## 📄 Licence
 
@@ -231,7 +239,3 @@ MIT © 2026 — voir [LICENSE](LICENSE).
 **[MIT](LICENSE)** © 2026 wxctf-bulk-apikey contributors
 
 </div>
-
----
-
-## ⚠️ Risque de compte et minimisation
