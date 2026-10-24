@@ -80,6 +80,7 @@ if (has('help') || argv.length === 0) { console.log(HELP); process.exit(0); }
 const COUNT = Math.max(1, parseInt(arg('count', '1'), 10) || 1);
 const MODEL = arg('model', process.env.WXCTF_MODEL || '');
 const TRIES = Math.max(1, parseInt(arg('exits', '6'), 10) || 6);
+const AUTO = has('auto');
 const VERIFY_ONLY = has('verify-only');
 const SCREEN = has('screen');
 const CONNECT = has('connect-9router');
@@ -172,21 +173,38 @@ async function newMailbox() {
 
 const CODE_RE = /(?:verification code is:?|code|verification|验证码)[^0-9a-z]{1,24}(?=[0-9a-z]*\d)([0-9a-z]{4,8})(?![0-9a-z])/i;
 
-async function waitForCode(address, { timeoutMs = CODE_WAIT_MS } = {}) {
+/**
+ * Ids already in the box, taken BEFORE the code is requested. The gmail pool is
+ * shared and recycled, so a mail that was already there belongs to another
+ * tenant and its code answers "incorrect or expired"; a failed snapshot is not
+ * an empty box, hence the retries and the hard fail.
+ */
+async function inboxIds(address) {
+  let last = null;
+  for (let k = 0; k < 4; k++) {
+    const list = await json_https(`${EMAILNATOR}/api/message-list`, { method: 'POST', body: { email: address, limit: 20 } });
+    const msgs = list && list.json && list.json.messages;
+    if (Array.isArray(msgs)) return new Set(msgs.map((m) => String((m && m.id) || '')).filter(Boolean));
+    last = new Error(`message-list ${(list && list.status) || 'no json'}`);
+    await sleep(4000);
+  }
+  throw new Error(`emailnator snapshot failed: ${String((last && last.message) || last).slice(0, 90)}`);
+}
+async function waitForCode(address, { timeoutMs = CODE_WAIT_MS, baseline = null } = {}) {
   const deadline = Date.now() + timeoutMs;
   const seen = new Set();
   while (Date.now() < deadline) {
     const list = await json_https(`${EMAILNATOR}/api/message-list`, { method: 'POST', body: { email: address, limit: 20 } });
     for (const m of (list.json && list.json.messages) || []) {
       const id = String(m.id || '');
-      if (!id || seen.has(id)) continue;
+      if (!id || seen.has(id) || (baseline && baseline.has(id))) continue;
       seen.add(id);
       const from = String(m.from || '');
       const subject = String(m.subject || '');
       if (!BRAND.test(`${from} ${subject}`) && !SENDER.test(from)) continue;
       const full = await json_https(`${EMAILNATOR}/api/message/${encodeURIComponent(id)}`);
       const html = String((full.json && full.json.content) || '');
-      const text = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;?/g, ' ').replace(/\s+/g, ' ');
+      const text = html.replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;?/g, ' ').replace(/\s+/g, ' ');
       const code = (text.match(CODE_RE) || [])[1];
       if (code) return { code, subject, from };
     }
@@ -269,6 +287,8 @@ async function mintOne(n) {
   const jar = path.join(os.tmpdir(), `wxctf-jar-${crypto.randomBytes(4).toString('hex')}.txt`);
   const box = await newMailbox();
   const email = box.plain;
+  // Shared box: snapshot before the code is asked for, or a stranger's mail answers.
+  const baseline = await inboxIds(email);
   const username = randUser();
   const password = randPass();
   const rec = { at: new Date().toISOString(), n, email, dotted: box.dotted, username, password, exit: exitLabel(exit), steps: {} };
@@ -279,7 +299,7 @@ async function mintOne(n) {
   log(`  send-code → ${send.status} ${msg(send)}`);
   if (!(send.json && send.json.success)) { rec.verdict = 'send-code-failed'; return rec; }
 
-  const mail = await waitForCode(email);
+  const mail = await waitForCode(email, { baseline });
   rec.steps.mail = { code: mail.code, subject: mail.subject || null, from: mail.from || null };
   log(`  code ${mail.code || 'NONE'} «${String(mail.subject || '').slice(0, 50)}»`);
   if (!mail.code) { rec.verdict = 'no-mail'; return rec; }
